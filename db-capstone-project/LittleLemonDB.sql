@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `LittleLemon`.`Menu` (
   `DessertId` INT NULL,
   `DrinkId` INT NULL,
   `CuisineId` INT NULL,
-  PRIMARY KEY (`MenuId`, `CourseId`),
+  PRIMARY KEY (`MenuId`),
   CONSTRAINT `StarterId`
     FOREIGN KEY (`StarterId`)
     REFERENCES `LittleLemon`.`MenuStarters` (`StarterId`)
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `LittleLemon`.`Orders` (
   `OrderDate` DATETIME NOT NULL,
   `Quantity` INT NOT NULL,
   `TotalCost` DECIMAL(6) NOT NULL,
-  `StatusId` INT NOT NULL,
+  `DeliveryId` INT,
   `StaffId` INT NOT NULL,
   `BookingId` INT NOT NULL,
   `MenuId` INT NOT NULL,
@@ -204,12 +204,28 @@ CREATE TABLE IF NOT EXISTS `LittleLemon`.`Orders` (
     REFERENCES `LittleLemon`.`Staff` (`StaffId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `StatusId`
-    FOREIGN KEY (`StatusId`)
-    REFERENCES `LittleLemon`.`OrderStatus` (`StatusId`)
+  CONSTRAINT `DeliveryId`
+    FOREIGN KEY (`DeliveryId`)
+    REFERENCES `LittleLemon`.`OrderDeliveryStatus` (`DeliveryId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `LittleLemon`.`OrderDeliveryStatus`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `LittleLemon`.`OrderDeliveryStatus` (
+  `DeliveryId` INT NOT NULL AUTO_INCREMENT,
+  `OrderId` INT NOT NULL,
+  `Status` VARCHAR(45) NOT NULL,
+  `DeliveryTime` DATETIME NOT NULL,
+  PRIMARY KEY (`DeliveryId`),
+  CONSTRAINT `fk_delivery_order`
+    FOREIGN KEY (`OrderId`)
+    REFERENCES `LittleLemon`.`Orders` (`OrderId`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
